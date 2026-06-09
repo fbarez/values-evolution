@@ -10,8 +10,7 @@ from genval.schemas import (
     ResponseDistribution,
     TrainingExample,
 )
-from genval.schemas.core import DataSource, EducationLevel, Gender, UrbanRural
-
+from genval.schemas.core import DataSource, EducationLevel, Gender
 
 # ---------------------------------------------------------------------------
 # ResponseDistribution
@@ -177,5 +176,5 @@ def test_eval_target_is_immutable():
         constructs={"trust": make_dist("trust_item")},
         n_respondents=1200,
     )
-    with pytest.raises(Exception):  # frozen model
+    with pytest.raises(ValidationError):
         target.iso3 = "FRA"

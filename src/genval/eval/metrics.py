@@ -8,7 +8,6 @@ Must NOT load model weights or run inference — metrics only.
 
 from __future__ import annotations
 
-import math
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 
@@ -16,7 +15,6 @@ import numpy as np
 from scipy.stats import wasserstein_distance
 
 from genval.schemas import EvalTarget, ResponseDistribution
-
 
 # ---------------------------------------------------------------------------
 # Result dataclasses
@@ -60,7 +58,7 @@ class EvalResult:
     variance_ratios: list[VarianceRatioResult]
     n_examples: int
     n_countries: int
-    per_country: dict[str, "EvalResult"] = field(default_factory=dict)
+    per_country: dict[str, EvalResult] = field(default_factory=dict)
 
 
 # ---------------------------------------------------------------------------
@@ -188,7 +186,7 @@ def expected_calibration_error(
     bin_edges = np.linspace(0.0, 1.0, n_bins + 1)
     bin_accuracies, bin_confidences, bin_counts = [], [], []
 
-    for lo, hi in zip(bin_edges[:-1], bin_edges[1:]):
+    for lo, hi in zip(bin_edges[:-1], bin_edges[1:], strict=True):
         mask = (probs >= lo) & (probs < hi)
         if mask.sum() == 0:
             bin_accuracies.append(0.0)
@@ -202,7 +200,7 @@ def expected_calibration_error(
     n_total = len(probs)
     ece = sum(
         count / n_total * abs(acc - conf)
-        for acc, conf, count in zip(bin_accuracies, bin_confidences, bin_counts)
+        for acc, conf, count in zip(bin_accuracies, bin_confidences, bin_counts, strict=True)
     )
 
     return CalibrationResult(
@@ -291,7 +289,7 @@ def evaluate(
     country_construct_observed: dict[tuple[str, str], list[float]] = {}
     country_construct_predicted: dict[tuple[str, str], list[float]] = {}
 
-    for target, pred in zip(targets, predictions):
+    for target, pred in zip(targets, predictions, strict=True):
         for construct_id, obs_dist in target.constructs.items():
             if construct_id not in pred:
                 continue

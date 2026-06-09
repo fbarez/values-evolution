@@ -7,8 +7,6 @@ text is rendered FROM those numbers.
 
 import json
 
-import pytest
-
 from genval.schemas import TrainingExample
 from genval.schemas.core import DataSource
 from genval.utils.hashing import hash_config

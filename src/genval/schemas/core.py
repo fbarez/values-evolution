@@ -7,39 +7,38 @@ or serialization logic.
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 from typing import Annotated
 
 from pydantic import BaseModel, Field, field_validator, model_validator
-
 
 # ---------------------------------------------------------------------------
 # Enumerations
 # ---------------------------------------------------------------------------
 
 
-class DataSource(str, Enum):
+class DataSource(StrEnum):
     EVS = "evs"
     WVS = "wvs"
     ESS = "ess"
     EUROBAROMETER = "eurobarometer"
 
 
-class Gender(str, Enum):
+class Gender(StrEnum):
     MALE = "male"
     FEMALE = "female"
     OTHER = "other"
     NOT_STATED = "not_stated"
 
 
-class EducationLevel(str, Enum):
+class EducationLevel(StrEnum):
     PRIMARY = "primary"
     SECONDARY = "secondary"
     TERTIARY = "tertiary"
     NOT_STATED = "not_stated"
 
 
-class UrbanRural(str, Enum):
+class UrbanRural(StrEnum):
     URBAN = "urban"
     SUBURBAN = "suburban"
     RURAL = "rural"
@@ -79,7 +78,7 @@ class ResponseDistribution(BaseModel):
         return v
 
     @model_validator(mode="after")
-    def length_matches_categories(self) -> "ResponseDistribution":
+    def length_matches_categories(self) -> ResponseDistribution:
         if len(self.probabilities) != self.n_categories:
             raise ValueError(
                 f"Expected {self.n_categories} probabilities, got {len(self.probabilities)}"
@@ -115,7 +114,7 @@ class ConstructValue(BaseModel):
     is_imputed: bool = Field(default=False)
 
     @model_validator(mode="after")
-    def at_least_one_of_value_or_distribution(self) -> "ConstructValue":
+    def at_least_one_of_value_or_distribution(self) -> ConstructValue:
         if self.value is None and self.distribution is None:
             raise ValueError("At least one of value or distribution must be set")
         return self
@@ -287,5 +286,4 @@ class EvalTarget(BaseModel):
     n_respondents: int
     country_profile: CountryYearProfile | None = None
 
-    class Config:
-        frozen = True   # eval targets are immutable once written
+    model_config = {"frozen": True}   # eval targets are immutable once written

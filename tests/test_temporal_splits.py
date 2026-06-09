@@ -4,7 +4,6 @@ Critical test: no training example may have survey_year >= val boundary (2017).
 This test is the enforcement mechanism for the leakage non-negotiable.
 """
 
-import pytest
 from omegaconf import OmegaConf
 
 from genval.schemas import TrainingExample
