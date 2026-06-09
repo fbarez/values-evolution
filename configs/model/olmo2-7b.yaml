@@ -1,0 +1,18 @@
+# OLMo 2 7B base checkpoint
+name: olmo2-7b
+hf_id: allenai/OLMo-2-1124-7B   # fully open weights + training data
+dtype: bfloat16
+max_seq_length: 4096
+vocab_size: 100352
+architecture: olmo2
+
+tokenizer_id: allenai/OLMo-2-1124-7B
+
+approx_size_gb: 14
+
+notes: >
+  OLMo 2 advantage: fully documented training data (Dolma corpus), enabling
+  cleaner attribution of mid-training effects. Good ablation partner for Qwen.
+  Weaker multilingual coverage than Qwen — may underperform on non-English
+  survey items. Run after Qwen baseline to quantify this gap.
+  Full training code and data available at https://github.com/allenai/OLMo.

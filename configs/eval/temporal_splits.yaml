@@ -1,0 +1,31 @@
+# Temporal split boundaries — SINGLE SOURCE OF TRUTH
+# These values are imported by all data-loading code.
+# Do NOT define splits anywhere else. Do NOT use random splits.
+
+train:
+  max_survey_year: 2008        # inclusive; covers EVS waves 1981, 1990, 1999, 2008
+  sources: [evs, ess, eurobarometer]
+
+validation:
+  survey_year: 2017            # EVS 2017 wave; ESS rounds 7–8
+  sources: [evs, ess]
+  purpose: >
+    Hyperparameter selection, early stopping, serialization ablation.
+    Do not report final numbers on validation; that risks adaptation.
+
+test:
+  survey_year: 2026            # EVS 2022 wave data + ESS round 11 (2023 fieldwork)
+  sources: [evs, ess]
+  release_status: partially_released   # some countries not yet available
+  purpose: >
+    Final held-out evaluation. Do not inspect test predictions until
+    all hyperparameter decisions are frozen. Report test numbers once only.
+
+# Countries to exclude from all splits (insufficient data or coverage gaps)
+excluded_countries: []
+
+# Leakage check (enforced by tests/test_temporal_splits.py)
+# No training example may have survey_year >= validation.survey_year
+leakage_check:
+  enabled: true
+  assert_train_max_year: 2008

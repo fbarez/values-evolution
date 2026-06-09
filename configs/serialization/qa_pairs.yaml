@@ -1,0 +1,21 @@
+# Serialization variant: question-answer pairs
+# Each training example is a Q&A pair: "In [country] in [year], what % of people
+# agreed that [survey item]?" → structured answer with distribution.
+variant: qa_pairs
+version: "1.0"
+
+question_templates:
+  - "In {country_name} in {survey_year}, what proportion of adults agreed that {item_text}?"
+  - "How did attitudes toward {construct} differ between {country_a} and {country_b} in {survey_year}?"
+  - "How did {construct} change in {country_name} between {year_a} and {year_b}?"
+
+answer_format:
+  mode: structured_json    # answer is a JSON blob parsed from model output
+  include_distribution: true
+  include_confidence: true
+
+notes: >
+  QA-pair format is closest to the intended inference use case.
+  Likely best for few-shot prompting at evaluation time.
+  Harder to train — requires consistent JSON output from the model.
+  Ablate after country_year_doc runs are stable.

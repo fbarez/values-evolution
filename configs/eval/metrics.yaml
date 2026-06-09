@@ -1,0 +1,43 @@
+# Evaluation metrics configuration
+# All metrics are computed on structured targets (distributions / numeric values),
+# never on raw text.
+
+distributional_distance:
+  method: jensen_shannon     # options: jensen_shannon | wasserstein | kl_divergence
+  # Jensen-Shannon is symmetric and bounded [0, 1]; preferred for response distributions
+  # Wasserstein treats ordinal structure; better for Likert scales
+  ordinal_wasserstein: true  # use ordinal (1D) Wasserstein for ordinal items
+  per_item: true             # report per-item and aggregated
+  aggregate: mean
+
+calibration:
+  method: expected_calibration_error   # ECE
+  n_bins: 10
+  # Measures whether predicted probabilities match observed frequencies
+  # A perfectly calibrated model: P(response=k | prediction) = predicted_prob(k)
+
+variance_ratio:
+  # Detects flattening toward a generic respondent (the known failure mode)
+  # Ratio = predicted between-country variance / observed between-country variance
+  # Ideal: ~1.0. Value < 1 means model is under-differentiating countries.
+  target: 1.0
+  warn_threshold: 0.7   # warn if ratio drops below this
+  fail_threshold: 0.5   # flag as failure if below this
+
+baselines:
+  persistence:
+    # Predict that the next wave equals the most recent observed wave for that country
+    description: "Most recent observation for each country-construct"
+  cohort_replacement:
+    # Demographic shift model: reweight the existing population by projected cohort sizes
+    description: "Demographic reweighting by projected birth cohort shares"
+    projection_source: wdi   # use WB population pyramids for projections
+
+reporting:
+  primary_metric: js_divergence_mean   # headline metric for model selection
+  secondary_metrics:
+    - calibration_ece
+    - variance_ratio
+    - persistence_delta    # improvement over persistence baseline
+  per_country: true        # report per-country breakdown
+  per_construct: true      # report per-construct breakdown

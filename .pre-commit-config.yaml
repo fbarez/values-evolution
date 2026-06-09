@@ -1,0 +1,17 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: no-data-commit
+        name: Block data/ files and files >5MB from commits
+        language: python
+        entry: scripts/hooks/no_data_commit.py
+        pass_filenames: true
+        always_run: false
+        types: [file]

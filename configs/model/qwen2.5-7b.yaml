@@ -1,0 +1,19 @@
+# Qwen 2.5 7B base checkpoint
+name: qwen2.5-7b
+hf_id: Qwen/Qwen2.5-7B          # base (not instruct) for mid-training
+dtype: bfloat16
+max_seq_length: 32768            # native context; use 2048 for initial runs to save memory
+vocab_size: 152064
+architecture: qwen2
+
+# Tokenizer — NEVER retrain; load from checkpoint
+tokenizer_id: Qwen/Qwen2.5-7B   # must match hf_id
+
+# Expected download size
+approx_size_gb: 15
+
+notes: >
+  Qwen 2.5 7B has strong multilingual coverage including European languages,
+  which matters for EVS/ESS data spanning 40+ countries in many languages.
+  Use the base model (not -Instruct) for mid-training to avoid alignment tax.
+  The Instruct variant can be used for zero-shot baseline comparison.

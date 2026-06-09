@@ -1,0 +1,40 @@
+# Data — never committed (GESIS/EVS license terms prohibit redistribution)
+data/
+outputs/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+.uv/
+*.egg
+
+# Secrets
+.env
+.env.*
+!.env.example
+credentials/
+*.pem
+*.key
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Large files (belt-and-suspenders; pre-commit hook also blocks these)
+*.bin
+*.safetensors
+*.pt
+*.ckpt

@@ -1,0 +1,37 @@
+# Serialization variant: one document per country × wave
+# Aggregates all respondents in a country-wave into a single document
+# representing population-level response distributions.
+variant: country_year_doc
+version: "1.0"
+
+template: |
+  Country: {country_name} ({iso3}), Survey wave: {survey_year}
+  N respondents: {n_respondents}
+  GDP per capita (PPP): {gdp_per_capita_ppp}
+  Liberal democracy index: {v2x_libdem}
+  Response distributions:
+
+aggregation:
+  method: weighted_mean     # use survey weights when available
+  distribution_bins: 5      # number of bins for ordinal response distributions
+  min_respondents: 100      # skip country-wave if fewer respondents
+
+value_rendering:
+  mode: distribution        # render full response distribution, not point estimate
+  include_ci: true          # include 95% CI from survey weights
+
+covariates:
+  - gdp_per_capita_ppp
+  - gdp_growth
+  - v2x_libdem
+  - v2x_polyarchy
+  - tertiary_enrolment
+  - urbanisation
+  - life_expectancy
+  - gini
+
+notes: >
+  This variant trains the model to predict country-level distributions rather
+  than individual responses. Reduces token cost by ~100x vs respondent_profile.
+  Likely better for the forecasting task (target is a country distribution).
+  Start with this variant for initial runs.

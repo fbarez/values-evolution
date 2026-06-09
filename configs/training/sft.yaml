@@ -1,0 +1,33 @@
+# Supervised fine-tuning config — instruction-following on QA pairs
+# Run AFTER mid-training if the forecasting interface needs to be QA-style.
+
+defaults:
+  - model: qwen2.5-7b
+
+task: sft
+
+learning_rate: 1e-5       # lower than mid-training; SFT risks overfitting
+lr_scheduler: cosine
+warmup_steps: 50
+weight_decay: 0.01
+max_grad_norm: 1.0
+
+per_device_train_batch_size: 4
+gradient_accumulation_steps: 4
+max_seq_length: 1024       # QA pairs are shorter
+
+max_steps: 2000
+save_steps: 200
+eval_steps: 200
+logging_steps: 25
+
+# For SFT: only compute loss on the answer tokens, not the question
+train_on_completions_only: true
+response_template: "Answer:"   # delimiter that marks the answer start
+
+bf16: true
+output_dir: outputs/checkpoints/sft
+
+notes: >
+  SFT is optional — only run if the mid-trained model cannot be prompted
+  zero-shot to produce structured JSON answers. Try prompting first.

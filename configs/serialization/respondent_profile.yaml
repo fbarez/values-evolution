@@ -1,0 +1,33 @@
+# Serialization variant: one document per respondent
+# Each training example narrates a single respondent's demographic profile
+# and presents their construct values as structured targets.
+variant: respondent_profile
+version: "1.0"
+
+template: |
+  Country: {country_name} ({iso3}), Survey year: {survey_year}
+  Age: {age}, Gender: {gender}, Education: {education_level}
+  Urbanisation: {urban_rural}, Religious denomination: {religion}
+  Employment: {employment_status}
+  Values:
+
+# Controls how construct values appear in the text
+value_rendering:
+  mode: construct_summary   # options: construct_summary | item_verbatim | qa_pairs
+  include_missing: false    # whether to render constructs with missing responses
+  numeric_precision: 2      # decimal places for continuous scales
+
+# Which constructs to include (all by default; subset for ablations)
+constructs: all
+
+# Country-level covariates appended after individual profile
+covariates:
+  - gdp_per_capita_ppp
+  - v2x_libdem
+  - tertiary_enrolment
+
+notes: >
+  This variant treats each respondent as a separate document.
+  Pro: maximum granularity, captures individual-level variation.
+  Con: high token count; may encourage memorisation of individual responses.
+  Ablate against country_year_doc variant.

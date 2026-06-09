@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "genval"
+version = "0.1.0"
+description = "Mid-training LLMs on cross-national values-survey data to model and forecast value evolution"
+requires-python = ">=3.11"
+dependencies = [
+    "transformers>=4.45",
+    "datasets>=2.21",
+    "accelerate>=0.34",
+    "pandas>=2.2",
+    "pyarrow>=17",
+    "pydantic>=2.8",
+    "hydra-core>=1.3",
+    "omegaconf>=2.3",
+    "scipy>=1.14",       # Wasserstein distance
+    "numpy>=1.26",
+    "python-dotenv>=1.0",
+    "rich>=13",          # logging / progress
+    "typer>=0.12",       # script CLIs
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-cov",
+    "ruff>=0.6",
+    "pre-commit>=3.8",
+    "ipykernel",
+    "nbformat",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/genval"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]  # line length handled by formatter
+
+[tool.ruff.lint.isort]
+known-first-party = ["genval"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
